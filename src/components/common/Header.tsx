@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
-import { Menu, PenSquare, LogOut, User, Settings, BookMarked, BarChart3 } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Menu, PenSquare, LogOut, User, Settings, BookMarked, BarChart3, Moon, Sun, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import routes from '@/routes';
 
@@ -13,7 +14,8 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
-  const navigation = routes.filter((route) => route.visible !== false);
+  const { theme, toggleTheme } = useTheme();
+  const navigation = routes.filter((route) => route.visible);
 
   const handleSignOut = async () => {
     try {
@@ -71,13 +73,32 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/search')}
+              title="Search"
+              className="hidden md:flex"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+
             {user && profile ? (
               <>
                 {(profile.role === 'creator' || profile.role === 'admin') && (
                   <Button
                     variant="default"
                     size="sm"
-                    onClick={() => navigate('/create-post')}
+                    onClick={() => navigate('/create')}
                     className="hidden md:flex items-center gap-2"
                   >
                     <PenSquare className="h-4 w-4" />
@@ -86,14 +107,16 @@ export default function Header() {
                 )}
 
                 <div className="hidden md:flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => navigate('/dashboard')}
-                    title="Dashboard"
-                  >
-                    <BarChart3 className="h-5 w-5" />
-                  </Button>
+                  {(profile.role === 'creator' || profile.role === 'admin') && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => navigate('/analytics')}
+                      title="Analytics"
+                    >
+                      <BarChart3 className="h-5 w-5" />
+                    </Button>
+                  )}
                   <Button
                     variant="ghost"
                     size="icon"
@@ -176,7 +199,7 @@ export default function Header() {
                             variant="default"
                             className="w-full mb-2"
                             onClick={() => {
-                              navigate('/create-post');
+                              navigate('/create');
                               setIsMenuOpen(false);
                             }}
                           >
@@ -185,16 +208,30 @@ export default function Header() {
                           </Button>
                         )}
 
+                        {(profile.role === 'creator' || profile.role === 'admin') && (
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start mb-2"
+                            onClick={() => {
+                              navigate('/analytics');
+                              setIsMenuOpen(false);
+                            }}
+                          >
+                            <BarChart3 className="h-4 w-4 mr-2" />
+                            Analytics
+                          </Button>
+                        )}
+
                         <Button
                           variant="outline"
                           className="w-full justify-start mb-2"
                           onClick={() => {
-                            navigate('/dashboard');
+                            navigate('/search');
                             setIsMenuOpen(false);
                           }}
                         >
-                          <BarChart3 className="h-4 w-4 mr-2" />
-                          Dashboard
+                          <Search className="h-4 w-4 mr-2" />
+                          Search
                         </Button>
 
                         <Button

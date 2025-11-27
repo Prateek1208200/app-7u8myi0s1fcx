@@ -577,3 +577,68 @@ export async function getOrderBySessionId(sessionId: string): Promise<Order | nu
   }
   return data;
 }
+
+// ============================================================================
+// NEWSLETTER
+// ============================================================================
+
+export async function subscribeToNewsletter(email: string, name: string | null): Promise<boolean> {
+  const { error } = await supabase
+    .from('newsletter_subscribers')
+    .insert({
+      email,
+      name,
+      status: 'active',
+    });
+
+  if (error) {
+    console.error('Error subscribing to newsletter:', error);
+    return false;
+  }
+  return true;
+}
+
+export async function unsubscribeFromNewsletter(email: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('newsletter_subscribers')
+    .update({ status: 'unsubscribed' })
+    .eq('email', email);
+
+  if (error) {
+    console.error('Error unsubscribing from newsletter:', error);
+    return false;
+  }
+  return true;
+}
+
+// ============================================================================
+// ANALYTICS
+// ============================================================================
+
+export async function getPostAnalytics(authorId: string) {
+  const { data, error } = await supabase
+    .from('post_analytics')
+    .select('*')
+    .eq('author_id', authorId)
+    .order('view_count', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching post analytics:', error);
+    return [];
+  }
+  return Array.isArray(data) ? data : [];
+}
+
+export async function getAnalyticsByPostId(postId: string) {
+  const { data, error } = await supabase
+    .from('post_analytics')
+    .select('*')
+    .eq('post_id', postId)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching analytics:', error);
+    return null;
+  }
+  return data;
+}

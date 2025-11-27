@@ -138,11 +138,14 @@ export interface NewsletterSubscriber {
 export interface PostAnalytics {
   id: string;
   post_id: string;
-  date: string;
-  views: number;
-  unique_visitors: number;
-  avg_time_on_page: number;
-  bounce_rate: number;
+  author_id: string;
+  view_count: number;
+  like_count: number;
+  comment_count: number;
+  bookmark_count: number;
+  share_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PostWithAuthor extends Post {
