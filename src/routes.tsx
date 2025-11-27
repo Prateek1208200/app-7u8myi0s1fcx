@@ -1,7 +1,9 @@
-import SamplePage from './pages/SamplePage';
 import type { ReactNode } from 'react';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 
-interface RouteConfig {
+export interface RouteConfig {
   name: string;
   path: string;
   element: ReactNode;
@@ -10,10 +12,35 @@ interface RouteConfig {
 
 const routes: RouteConfig[] = [
   {
-    name: 'Sample Page',
+    name: 'Home',
     path: '/',
-    element: <SamplePage />
-  }
+    element: <Home />,
+    visible: true,
+  },
+  {
+    name: 'Explore',
+    path: '/explore',
+    element: <Home />,
+    visible: true,
+  },
+  {
+    name: 'Categories',
+    path: '/categories',
+    element: <Home />,
+    visible: true,
+  },
+  {
+    name: 'Login',
+    path: '/login',
+    element: <Login />,
+    visible: false,
+  },
+  {
+    name: 'Not Found',
+    path: '*',
+    element: <NotFound />,
+    visible: false,
+  },
 ];
 
 export default routes;
